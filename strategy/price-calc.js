@@ -13,7 +13,7 @@ function calculateMacro(depot, lastPrice, firstStep, coverage, numberOfOrders, s
     console.log('netStep = ' + netStep);
     
     for(let i = 0; i < numberOfOrders; i++) {
-        macroOrders.push([lastPrice * (1 - firstStep/100) - i * netStep, 1]);
+        macroOrders.push([lastPrice * (1 - firstStep/100) - i * netStep, depot / numberOfOrders]);
     }
     
     return macroOrders;

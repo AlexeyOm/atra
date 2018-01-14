@@ -3,14 +3,17 @@ let APISecret = 'PBWd3H4uHZSMtXVq2RcXVWygBwq4ZWcPazQmpViPNe9QHyIEwDQxM4CDxayYFRw
 let APIURL = 'https://api.binance.com/api/v3/order/test';
 let orderTestURL = '';//v3/order/test';
 
+let bot ={};
+bot.state = 'cycle_initiation';
+
 
 let sha256 = require('js-sha256');
 let opt = require('./settings/api.js');
 let calc = require('./strategy/price-calc.js');
 
-console.log(calc.macro(0,100,2,25,10,'BUY',1,1) );
+console.log(calc.macro(20,100,2,25,10,'BUY',1,1) );
 
-//setInterval(logTime, 500);
+setInterval(logTime, 1000);
 let request = require('request-promise-native');
 
 let symbol = 'TRXBTC';
@@ -56,13 +59,32 @@ request(options)
 function logTime() {
     //console.log("hmm" + Date());
     
-    request('https://api.binance.com/api/v3/ticker/price?symbol=TRXBTC')
+request('https://api.binance.com/api/v1/exchangeInfo')
     .then(function (htmlString) {
-        console.log(Date() + JSON.parse(htmlString).price);
+        //console.log(Date() + JSON.parse(htmlString).symbols);
+        console.log(JSON.parse(htmlString).symbols.filter(symbol => symbol.symbol === 'TRXBTC'));
     })
     .catch(function (err) {
+        console.log('!! ERROR getting Exchange Info');
         console.log(err);
     });
-    
 }
 
+
+function workingCycle() {
+    if(bot.state === 'cycle_initiation') {
+        console.log('beginning new cycle');
+        for(let i = 0; i < opt.numberOfOrders; i++) {
+            let orderOptions = bot.netOptions;
+            request(bot.netOptionsOrder)
+                .then(function (htmlString) {
+                    //console.log(Date() + JSON.parse(htmlString).symbols);
+                    console.log(JSON.parse(htmlString).symbols.filter(symbol => symbol.symbol === 'TRXBTC'));
+                })
+                .catch(function (err) {
+                    console.log('!! ERROR getting Exchange Info');
+                    console.log(err);
+    });
+        }
+    }
+}
